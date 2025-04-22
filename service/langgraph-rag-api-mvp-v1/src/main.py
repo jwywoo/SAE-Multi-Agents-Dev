@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from functools import lru_cache
 
-from config import get_settings
 from stock.router import router as stock_router
 
 app = FastAPI(title="SAE LangGraph MVP RAG API", version="1.0.0")
+
 
 app.add_middleware(
     CORSMiddleware,

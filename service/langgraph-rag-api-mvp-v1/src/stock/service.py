@@ -1,5 +1,6 @@
 from .schema import FlowState, ResponseDto, Stock
 from .preprocessing.flow.preprocessing_flow import preprocessing_flow_init
+from .rag.flow.rag_flow import rag_flow_init
 
 
 async def stock_generation_service(state: FlowState) -> ResponseDto:
@@ -16,15 +17,13 @@ async def stock_generation_service(state: FlowState) -> ResponseDto:
         rag_flow_state=preprocessed_result['rag_flow_state'],
     )
 
-    response = ResponseDto(
+    # RAG Flow
+    # RAG Agent Init
+    rag_agent = rag_flow_init()
+    retrieved_result = rag_agent.invoke(preprocessed_flow)
+
+    response_dto = ResponseDto(
         generated_stocks=[]
     )
-    response.generated_stocks.append(
-        Stock(
-            korean_name="test",
-            english_name="test",
-            market="test",
-            ticker_code="test"
-        )
-    )
-    return response
+    response_dto.generated_stocks.extend(retrieved_result['generated_stocks'])
+    return response_dto
