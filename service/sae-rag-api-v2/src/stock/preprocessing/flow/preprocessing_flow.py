@@ -1,18 +1,17 @@
 from langgraph.graph import StateGraph, START, END
 
-from ...schema import FlowState
 from ..nodes.router_node import *
 from ..nodes.preprocessing_nodes import *
 
 
 def preprocessing_flow_init():
-    preprocessing_graph = StateGraph(state_schema=FlowState)
-
+    preprocessing_graph = StateGraph(state_schema=PreprocessingFlowState)
     # Registering Noes
 
     # router
     preprocessing_graph.add_node(
         "preprocessing_router_node", preprocessing_router_node)
+
     # preprocessing
     preprocessing_graph.add_node(
         "naver_news_preprocessing_node", preprocessing_naver_news_node)
@@ -29,7 +28,7 @@ def preprocessing_flow_init():
 
     preprocessing_graph.add_conditional_edges(
         "preprocessing_router_node",
-        lambda flow_state: flow_state.preprocessing_flow_state.route,
+        lambda flow_state: flow_state.route,
         {
             "naver_news": "naver_news_preprocessing_node",
             "naver_entertainment": "naver_entertainment_preprocessing_node",

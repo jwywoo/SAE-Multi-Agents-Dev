@@ -1,4 +1,4 @@
-from ...schema import FlowState, Stock
+from ...schema import RAGFlowState, Stock
 
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone
@@ -31,21 +31,20 @@ def retrieved_vector_parser(given_vectors, market_name="N/A"):
     ]
 
 
-def retriever_node(state: FlowState):
-    preprocessing_flow_state = state.preprocessing_flow_state
-    text = f"{preprocessing_flow_state.preprocessed_title}  {preprocessing_flow_state.preprocessed_content}"
+def retriever_node(rag_flow_state: RAGFlowState):
+    text = f"{rag_flow_state.preprocessed_result['title']}  {rag_flow_state.preprocessed_result['content']}"
 
     # Vector Store init
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
     kor_retriever = retriever_init(
         "sae-embedded-stocks-kor", embeddings, "kospi-900")
-    foreign_retriever = retriever_init(
+    foriegn_retriever = retriever_init(
         "sae-embedded-stocks-foriegn", embeddings, "nasdaq-1000")
 
     # Invoke
     kor_result = retrieved_vector_parser(kor_retriever.invoke(text), "KOSPI")
-    foreign_result = retrieved_vector_parser(
-        foreign_retriever.invoke(text), "NASDAQ")
-    state.generated_stocks.extend(kor_result)
-    state.generated_stocks.extend(foreign_result)
-    return state
+    foriegn_result = retrieved_vector_parser(
+        foriegn_retriever.invoke(text), "NASDAQ")
+    rag_flow_state.response_dto.extend(kor_result)
+    rag_flow_state.response_dto.extend(foriegn_result)
+    return rag_flow_state

@@ -2,12 +2,6 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 
 
-class RequestDto(BaseModel):
-    original_title: str = Field(..., min_length=1)
-    original_url: str = Field(..., min_length=5, max_length=2083)
-    original_content: str = Field(..., min_length=1)
-
-
 class Stock(BaseModel):
     korean_name: str
     english_name: str
@@ -15,11 +9,19 @@ class Stock(BaseModel):
     ticker_code: str
 
 
+class StockGenRequestDto(BaseModel):
+    original_title: str = Field(..., min_length=1)
+    original_url: str = Field(..., min_length=5, max_length=2083)
+    original_content: str = Field(..., min_length=1)
+
+
 class ResponseDto(BaseModel):
     generated_stocks: list[Stock]
 
 
 class PreprocessingFlowState(BaseModel):
+    state_id: str = Field(..., min_length=1)
+    request_dto: StockGenRequestDto
     route: str
     preprocessed_title: str
     preprocessed_url: str
@@ -27,11 +29,14 @@ class PreprocessingFlowState(BaseModel):
 
 
 class RAGFlowState(BaseModel):
-    route: str
+    state_id: str = Field(..., min_length=1)
+    preprocessed_result: dict
+    response_dto: list[Stock]
 
 
-class FlowState(BaseModel):
-    request_dto: RequestDto
-    generated_stocks: List[Stock]
-    preprocessing_flow_state: PreprocessingFlowState
-    rag_flow_state: RAGFlowState
+class FeedbackFlowState(BaseModel):
+    state_id: str = Field(..., min_length=1)
+    feedback_score: int
+    regeneration: bool
+    preprocessed_result: dict
+    rag_result: dict

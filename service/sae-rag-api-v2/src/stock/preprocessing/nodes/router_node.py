@@ -1,13 +1,12 @@
 import re
 
+from ...schema import PreprocessingFlowState
 from .supporting_tools import text_cleaning
 
-from ...schema import FlowState
 
-
-def preprocessing_router_node(state: FlowState):
-    request_dto = state.request_dto
-    preprocessing_flow_state = state.preprocessing_flow_state
+def preprocessing_router_node(preprocessing_flow_state: PreprocessingFlowState):
+    print("Routing")
+    request_dto = preprocessing_flow_state.request_dto
 
     youtube_pattern = r"^https?://(www\.)?youtube\.com"
     naver_news_pattern = r"^https?://n\.news\.naver\.com"
@@ -35,6 +34,4 @@ def preprocessing_router_node(state: FlowState):
         request_dto.original_content)
     preprocessing_flow_state.preprocessed_url = request_dto.original_url
     preprocessing_flow_state.route = route
-
-    state.preprocessing_flow_state = preprocessing_flow_state
-    return state
+    return preprocessing_flow_state
