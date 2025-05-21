@@ -1,5 +1,5 @@
 from langgraph.graph import StateGraph, START, END
-from ...schema import RAGFlowState
+from ...schema.rag_schema import RAGFlowState
 from ..nodes.retriever import retriever_node
 
 

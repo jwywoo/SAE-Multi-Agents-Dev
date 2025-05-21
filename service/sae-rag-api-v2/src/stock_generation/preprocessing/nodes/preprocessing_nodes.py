@@ -1,6 +1,6 @@
 from .supporting_tools import content_parser
 
-from ...schema import PreprocessingFlowState
+from ...schema.preprocessing_schema import PreprocessingFlowState
 
 
 def preprocessing_naver_news_node(preprocessing_flow_state: PreprocessingFlowState):

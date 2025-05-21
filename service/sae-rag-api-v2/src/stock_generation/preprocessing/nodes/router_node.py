@@ -1,6 +1,6 @@
 import re
 
-from ...schema import PreprocessingFlowState
+from ...schema.preprocessing_schema import PreprocessingFlowState
 from .supporting_tools import text_cleaning
 
 

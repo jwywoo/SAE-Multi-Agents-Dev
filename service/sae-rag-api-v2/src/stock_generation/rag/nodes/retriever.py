@@ -1,4 +1,4 @@
-from ...schema import RAGFlowState, Stock
+from ...schema.rag_schema import RAGFlowState, Stock
 
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone

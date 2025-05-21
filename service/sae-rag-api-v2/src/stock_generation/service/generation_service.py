@@ -1,13 +1,17 @@
 import uuid
 
-from .schema import StockGenRequestDto, ResponseDto, Stock, PreprocessingFlowState, RAGFlowState
-from .preprocessing.flow.preprocessing_flow import preprocessing_flow_init
-from .rag.flow.rag_flow import rag_flow_init
+from ..schema.base_schema import StockGenResponseDto, StockGenRequestDto
+from ..schema.preprocessing_schema import PreprocessingFlowState
+from ..schema.rag_schema import RAGFlowState
+from ..schema.feedback_schema import FeedbackFlowState
 
-from .memory_store import add_memory, get_memory
+from ..preprocessing.flow.preprocessing_flow import preprocessing_flow_init
+from ..rag.flow.rag_flow import rag_flow_init
+
+from ..memory_store import add_memory, get_memory
 
 
-async def stock_generation_service(request_dto: StockGenRequestDto) -> ResponseDto:
+async def stock_generation_service(request_dto: StockGenRequestDto) -> StockGenResponseDto:
     preprocessing_flow_state = PreprocessingFlowState(
         state_id=str(uuid.uuid1()),
         request_dto=request_dto,
@@ -45,7 +49,9 @@ async def stock_generation_service(request_dto: StockGenRequestDto) -> ResponseD
         key=retrieved_result['state_id'],
         value=retrieved_result
     )
-    response_dto = ResponseDto(
+
+    response_dto = StockGenResponseDto(
+        state_id=retrieved_result['state_id'],
         generated_stocks=[]
     )
     response_dto.generated_stocks.extend(retrieved_result['response_dto'])
